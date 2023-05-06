@@ -1,6 +1,6 @@
 import Race from './Race';
 
-export default class Elf extends Race {
+class Elf extends Race {
   public maxLifePoints: number;
   static numberOfInstances = 0;
 
@@ -21,3 +21,4 @@ export default class Elf extends Race {
     return this.numberOfInstances;
   }
 }
+export default Elf;

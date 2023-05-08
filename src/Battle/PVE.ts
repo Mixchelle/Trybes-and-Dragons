@@ -1,32 +1,33 @@
-import Battle from './Battle';
-import Character from '../Character';
-import Monster from '../Monster';
 import Fighter, { SimpleFighter } from '../Fighter';
+import Battle from './Battle';
 
-type BattleParticipant = Character | Monster | Fighter | SimpleFighter;
+class PVE extends Battle {
+  private _char: Fighter;
+  private _enemies: (Fighter | SimpleFighter)[];
 
-export default class PVE extends Battle {
-  constructor(
-    public player: Character,
-    public monsters: BattleParticipant[],
-  ) {
-    super(player);
-  }
-
-  private _battles() {
-    this.monsters.forEach((opponent) => {
-      const continueBattle = () => 
-        this.player.lifePoints > 0 && opponent.lifePoints > 0;
-      while (continueBattle()) {
-        opponent.attack(this.player);
-        this.player.attack(opponent);
-      }
-    });
+  constructor(char: Fighter, enemies: (Fighter | SimpleFighter)[]) {
+    super(char);
+    this._char = char;
+    this._enemies = enemies;
   }
 
   fight(): number {
-    this._battles();
+    this._enemies.forEach((enemy) => {
+      while (this._char.lifePoints > 0 && enemy.lifePoints > 0) {
+        if (PVE.isFighter(enemy)) {
+          this._char.attack(enemy as Fighter);
+        } else {
+          this._char.attack(enemy as SimpleFighter);
+        }
+        enemy.attack(this._char);
+      }
+    });
+    return super.fight();
+  }
 
-    return this.player.lifePoints > 0 ? 1 : -1;
+  private static isFighter(enemy: Fighter | SimpleFighter): enemy is Fighter {
+    return 'defense' in enemy && 'levelUp' in enemy;
   }
 }
+
+export default PVE;

@@ -3,10 +3,12 @@ import Character from '../Character';
 import Monster from '../Monster';
 import Fighter, { SimpleFighter } from '../Fighter';
 
+type BattleParticipant = Character | Monster | Fighter | SimpleFighter;
+
 export default class PVE extends Battle {
   constructor(
     public player: Character,
-    public monsters: (Fighter | SimpleFighter | Monster)[],
+    public monsters: BattleParticipant[],
   ) {
     super(player);
   }
